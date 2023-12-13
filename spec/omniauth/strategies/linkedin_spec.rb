@@ -10,7 +10,7 @@ describe OmniAuth::Strategies::LinkedIn do
 
   describe '#client' do
     it 'has correct LinkedIn site' do
-      expect(subject.client.site).to eq('https://api.linkedin.com')
+      expect(subject.client.site).to eq('https://www.linkedin.com')
     end
 
     it 'has correct `authorize_url`' do
@@ -43,7 +43,7 @@ describe OmniAuth::Strategies::LinkedIn do
 
     let(:parsed_response) { Hash[:foo => 'bar'] }
 
-    let(:profile_endpoint) { 'v2/userinfo' }
+    let(:profile_endpoint) { 'https://api.linkedin.com/v2/userinfo' }
 
     let(:profile_response) { instance_double OAuth2::Response, parsed: parsed_response }
 
