@@ -48,7 +48,7 @@ module OmniAuth
       end
 
       def raw_info
-        @raw_info ||= access_token.get(profile_endpoint).parsed
+        @raw_info ||= self.class.get(profile_endpoint, headers: { 'Authorization' => "Bearer #{access_token}" })
       end
 
       private
