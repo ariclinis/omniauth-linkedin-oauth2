@@ -30,7 +30,7 @@ describe OmniAuth::Strategies::LinkedIn do
 
   describe '#uid' do
     before :each do
-      allow(subject).to receive(:raw_info) { Hash['id' => 'uid'] }
+      allow(subject).to receive(:raw_info) { Hash['sub' => 'uid'] }
     end
 
     it 'returns the id from raw_info' do
@@ -43,18 +43,12 @@ describe OmniAuth::Strategies::LinkedIn do
 
     let(:parsed_response) { Hash[:foo => 'bar'] }
 
-    let(:profile_endpoint) { '/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))' }
-    let(:email_address_endpoint) { '/v2/emailAddress?q=members&projection=(elements*(handle~))' }
+    let(:profile_endpoint) { 'v2/userinfo' }
 
-    let(:email_address_response) { instance_double OAuth2::Response, parsed: parsed_response }
     let(:profile_response) { instance_double OAuth2::Response, parsed: parsed_response }
 
     before :each do
       allow(subject).to receive(:access_token).and_return access_token
-
-      allow(access_token).to receive(:get)
-        .with(email_address_endpoint)
-        .and_return(email_address_response)
 
       allow(access_token).to receive(:get)
         .with(profile_endpoint)
@@ -63,9 +57,13 @@ describe OmniAuth::Strategies::LinkedIn do
 
     it 'returns parsed responses using access token' do
       expect(subject.info).to have_key :email
-      expect(subject.info).to have_key :first_name
-      expect(subject.info).to have_key :last_name
-      expect(subject.info).to have_key :picture_url
+      expect(subject.info).to have_key :name
+      expect(subject.info).to have_key :given_name
+      expect(subject.info).to have_key :family_name
+      expect(subject.info).to have_key :picture
+      expect(subject.info).to have_key :locale
+      expect(subject.info).to have_key :email
+      expect(subject.info).to have_key :email_verified
 
       expect(subject.raw_info).to eq({ :foo => 'bar' })
     end
@@ -106,7 +104,7 @@ describe OmniAuth::Strategies::LinkedIn do
       end
 
       it 'sets default scope' do
-        expect(subject.authorize_params['scope']).to eq('r_liteprofile r_emailaddress')
+        expect(subject.authorize_params['scope']).to eq('profile email w_member_social')
       end
     end
   end
