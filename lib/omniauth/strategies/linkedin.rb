@@ -10,8 +10,8 @@ module OmniAuth
         :authorize_url => 'https://www.linkedin.com/oauth/v2/authorization?response_type=code',
         :token_url => 'https://www.linkedin.com/oauth/v2/accessToken'
       }
-
-      option :scope, 'profile email w_member_social'
+      option :grant_type, 'client_credentials'
+      option :scope, 'profile email w_member_social openid'
       option :fields, ['sub', 'name', 'given_name','family_name','picture', 'locale', 'email', 'email_verified']
 
       uid do
